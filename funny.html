@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Info</title>
+    <style>
+        body {
+            background-image: url('https://i.imgur.com/80v7A48.gif');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            min-height: 100vh;
+        }
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            animation: scrollUp 20s linear forwards;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+        .section {
+            margin-top: 25px;
+        }
+        .section h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+        p {
+            font-size: 1.5em;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+        .loading {
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+        .warning {
+            font-size: 1.2em;
+            color: #ff4444;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+        }
+        /* Epileptic effect for skibidi mode */
+        .epileptic {
+            animation: colorFlash 0.2s infinite;
+        }
+        @keyframes colorFlash {
+            0% { color: #ffffff; }
+            25% { color: #ff0000; }
+            50% { color: #00ff00; }
+            75% { color: #0000ff; }
+            100% { color: #ffffff; }
+        }
+        /* Scroll animation from bottom to center */
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        /* Pause animation on hover */
+        .container:hover {
+            animation-play-state: paused;
+        }
+        /* Hidden YouTube player */
+        #player {
+            display: none;
+        }
+        .audio-warning {
+            font-size: 1.2em;
+            color: #ff4444;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="warning" id="warning" style="display: none;">
+            I hope you aint dead.
+        </p>
+        <p class="audio-warning" id "audio-warning">
+            Ig no audio. Click anywhere to start.
+        </p>
+        <h1>Your Information</h1>
+        <div class="section">
+            <h2>Network & Location</h2>
+            <p id="ip">IP Address: <span>Loading...</span></p>
+            <p id="isp">Internet Provider: <span>Loading...</span></p>
+            <p id="location">Location: <span>Loading...</span></p>
+            <p id="connection">Connection Type: <span>Loading...</span></p>
+        </div>
+        <div class="section">
+            <h2>Device & Browser</h2>
+            <p id="browser">Browser: <span>Loading...</span></p>
+            <p id="os">Operating System: <span>Loading...</span></p>
+            <p id="device">Device Type: <span>Loading...</span></p>
+            <p id="screen">Screen Resolution: <span>Loading...</span></p>
+            <p id="language">Browser Language: <span>Loading...</span></p>
+            <p id="timezone">Timezone: <span>Loading...</span></p>
+            <p id="userAgent">User Agent: <span>Loading...</span></p>
+            <p id="battery">Battery Status: <span>Loading...</span></p>
+        </div>
+        <p class="loading" id="loading">Fetching data...</p>
+    </div>
+    <div id="player"></div>
+
+    <script>
+       
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'cfp2n3mfdxo',
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            
+            setTimeout(() => {
+                if (player.getPlayerState() !== 1) { // Not playing
+                    document.getElementById("audio-warning").style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        function onPlayerError(event) {
+            document.getElementById("audio-warning").innerText = 'Error loading audio. Please try refreshing the page.';
+            document.getElementById("audio-warning").style.display = 'block';
+        }
+
+        
+        document.body.addEventListener('click', () => {
+            if (player && player.playVideo) {
+                player.playVideo();
+                document.getElementById("audio-warning").style.display = 'none';
+            }
+        });
+
+       
+        let typedText = '';
+        document.addEventListener('keydown', (event) => {
+            typedText += event.key.toLowerCase();
+            if (typedText.includes('skibidi')) {
+                document.body.style.backgroundImage = "url('https://i.imgur.com/06HOHAy.gif')";
+                document.getElementById('warning').style.display = 'block';
+                document.querySelectorAll('h1, h2, p').forEach(element => {
+                    element.classList.add('epileptic');
+                });
+            } else if (event.key === 'Escape') {
+                typedText = '';
+                document.body.style.backgroundImage = "url('https://i.imgur.com/80v7A48.gif')";
+                document.getElementById('warning').style.display = 'none';
+                document.querySelectorAll('h1, h2, p').forEach(element => {
+                    element.classList.remove('epileptic');
+                });
+            }
+        });
+
+        
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').innerHTML = `IP Address: ${data.ip}`;
+                document.getElementById('isp').innerHTML = `Internet Provider: ${data.org || 'Unknown'}`;
+                document.getElementById('location').innerHTML = `Location: ${data.city}, ${data.region}, ${data.country_name} (${data.latitude}, ${data.longitude})`;
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error fetching IP data:', error);
+                document.getElementById('loading').innerText = 'Error fetching IP data';
+            });
+
+        
+        const userAgent = navigator.userAgent;
+        const browserInfo = (function() {
+            if (userAgent.includes('Firefox')) return 'Mozilla Firefox';
+            if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) return 'Google Chrome';
+            if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Apple Safari';
+            if (userAgent.includes('Edg')) return 'Microsoft Edge';
+            return 'Unknown Browser';
+        })();
+        document.getElementById('browser').innerHTML = `Browser: ${browserInfo}`;
+
+        
+        const osInfo = (function() {
+            if (userAgent.includes('Windows')) return 'Windows';
+            if (userAgent.includes('Mac OS')) return 'Mac OS';
+            if (userAgent.includes('Linux') && !userAgent.includes('Android')) return 'Linux';
+            if (userAgent.includes('Android')) return 'Android';
+            if (userAgent.includes('iPhone') || userAgent.includes('iPad')) return 'iOS';
+            return 'Unknown OS';
+        })();
+        document.getElementById('os').innerHTML = `Operating System: ${osInfo}`;
+
+        
+        const deviceType = (function() {
+            if (/Mobi|Android|iPhone|iPad|iPod/.test(userAgent)) return 'Mobile';
+            if (/Tablet|iPad/.test(userAgent)) return 'Tablet';
+            return 'Desktop';
+        })();
+        document.getElementById('device').innerHTML = `Device Type: ${deviceType}`;
+
+        document.getElementById('screen').innerHTML = `Screen Resolution: ${window.screen.width}x${window.screen.height}`;
+
+        
+        document.getElementById('language').innerHTML = `Browser Language: ${navigator.language || navigator.userLanguage || 'Unknown'}`;
+
+        
+        document.getElementById('timezone').innerHTML = `Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'}`;
+
+        
+        document.getElementById('userAgent').innerHTML = `User Agent: ${userAgent}`;
+
+        
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        document.getElementById('connection').innerHTML = `Connection Type: ${connection ? connection.effectiveType || 'Unknown' : 'Unknown'}`;
+
+        
+        if (navigator.getBattery) {
+            navigator.getBattery().then(battery => {
+                const batteryStatus = `${battery.charging ? 'Charging' : 'Not Charging'}, ${Math.round(battery.level * 100)}%`;
+                document.getElementById('battery').innerHTML = `Battery Status: ${batteryStatus}`;
+            }).catch(() => {
+                document.getElementById('battery').innerHTML = `Battery Status: Unavailable`;
+            });
+        } else {
+            document.getElementById('battery').innerHTML = `Battery Status: Unavailable`;
+        }
+    </script>
+</body>
+</html>
